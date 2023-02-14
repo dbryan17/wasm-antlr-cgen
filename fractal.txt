@@ -1,0 +1,54 @@
+virtual int visitScript(FractalParser::ScriptContext *context) = 0;
+
+    virtual std::complex<double> visitSET_TO_COM(FractalParser::SET_TO_COMContext *context) = 0;
+
+    virtual std::complex<double> visitDEFAULT_TO_COM(FractalParser::DEFAULT_TO_COMContext *context) = 0;
+
+    virtual antlrcpp::Any visitBLOCK_COM(FractalParser::BLOCK_COMContext *context) = 0;
+
+    virtual antlrcpp::Any visitCOLOR_COM(FractalParser::COLOR_COMContext *context) = 0;
+
+    virtual antlrcpp::Any visitPAR_COM(FractalParser::PAR_COMContext *context) = 0;
+
+    virtual antlrcpp::Any visitDYN_COM(FractalParser::DYN_COMContext *context) = 0;
+
+    virtual antlrcpp::Any visitIF_THEN_COM(FractalParser::IF_THEN_COMContext *context) = 0;
+
+    virtual antlrcpp::Any visitLOOP_COM(FractalParser::LOOP_COMContext *context) = 0;
+
+
+virtual int visitScript(FractalParser::ScriptContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::complex<double> visitSET_TO_COM(FractalParser::SET_TO_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::complex<double> visitDEFAULT_TO_COM(FractalParser::DEFAULT_TO_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitBLOCK_COM(FractalParser::BLOCK_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitCOLOR_COM(FractalParser::COLOR_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitPAR_COM(FractalParser::PAR_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitDYN_COM(FractalParser::DYN_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitIF_THEN_COM(FractalParser::IF_THEN_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitLOOP_COM(FractalParser::LOOP_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
