@@ -151,15 +151,15 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitLoopDo(FractalParser::LoopDoContext *ctx) override {
+  virtual int visitLoopDo(FractalParser::LoopDoContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitLoopIterateOn(FractalParser::LoopIterateOnContext *ctx) override {
+  virtual int visitLoopIterateOn(FractalParser::LoopIterateOnContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitLoopIterateEmpty(FractalParser::LoopIterateEmptyContext *ctx) override {
+  virtual int visitLoopIterateEmpty(FractalParser::LoopIterateEmptyContext *ctx) override {
     return visitChildren(ctx);
   }
 

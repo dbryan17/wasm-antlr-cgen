@@ -88,11 +88,11 @@ public:
 
     virtual antlrcpp::Any visitIF_THEN_ELSE(FractalParser::IF_THEN_ELSEContext *context) = 0;
 
-    virtual antlrcpp::Any visitLoopDo(FractalParser::LoopDoContext *context) = 0;
+    virtual int visitLoopDo(FractalParser::LoopDoContext *context) = 0;
 
-    virtual antlrcpp::Any visitLoopIterateOn(FractalParser::LoopIterateOnContext *context) = 0;
+    virtual int visitLoopIterateOn(FractalParser::LoopIterateOnContext *context) = 0;
 
-    virtual antlrcpp::Any visitLoopIterateEmpty(FractalParser::LoopIterateEmptyContext *context) = 0;
+    virtual int visitLoopIterateEmpty(FractalParser::LoopIterateEmptyContext *context) = 0;
 
     virtual antlrcpp::Any visitLoopRepeat(FractalParser::LoopRepeatContext *context) = 0;
 
