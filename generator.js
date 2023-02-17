@@ -25,11 +25,13 @@ var myGenPixles;
 
 createModule().then((Module) => {
   let run_script = Module.cwrap("run_script", "null", ["string"]);
-  // run_script("iterate z^2 + c until z escapes.");
-  // lets start with just making variables different and shit
-  //run_script("(z+2)^2 + 4."); /////// thisssssssssss
-  run_script("do set z to z^2 + c. until z escapes.");
-  // run_script("iterate z^2 + c until z escapes.");
+  /////// TESTING ////////
+  /// Loops
+  // run_script("iterate z^2 + c on z until z > 4 + 4i."); // 2
+  // run_script("do set z to z^2+c. until z escapes."); // 2
+  // run_script("iterate z^2 + c until z escapes."); // 2
+  // run_script("repeat 4 times set z to z^2.");
+  run_script("set z to (4 + 3) * -i.");
   //myRun = run_script;
   // console.log("ran");
   document.querySelector("#inBtn").addEventListener("click", () => {

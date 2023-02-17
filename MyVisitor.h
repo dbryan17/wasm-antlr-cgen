@@ -19,53 +19,81 @@
     // hash table of variable to value 
     std::unordered_map<std::string,std::complex<double>> inVars = {};
 
-    // std::string currVar;
 
-    // std::complex<double> result;
+    int result;
     
-
-    // how many iterations to go to get to the bailout value
+    // how many iterations to go to get to the max or min radius 
     int iters;
     // when to call it infinity - 2 for mandlebrot set 
-    int maxRadius;
+    double maxRadius;
+    // when to call 0 
+    double minRadius; 
+    // the variable in the script that we are setting to the critical value ---- DYN ONLY
+    std::string crit_var;
+    // the variable in the script that we are setting to the screen value 
+    std::string screen_var;
+    std::complex<double> crit_point;
 
-    std::string vari;
 
 public: 
-  myVisitor(int iters, int maxRadius, std::string& var) : iters(iters), maxRadius(maxRadius), vari(var) {}
+  myVisitor(int iters, double maxRadius, double minRadius, std::string& crit_var, std::string& screen, std::complex<double> crit_point) : iters(iters), maxRadius(maxRadius), minRadius(minRadius), crit_var(crit_var), screen_var(screen), crit_point(crit_point) {}
 
   // function takes a point in complex plane, and evaluates it with the script
   int evalPoint(std::complex<double> point, FractalParser::ScriptContext* tree) {
 
+    std::cout << "in eval point\n";
+
     // set variable we are changing to the point
-    inVars[vari] = point;
-    // get result
+    inVars[screen_var] = point;
+    // add critical point variable to map - this works for now but shouldnt go here --- TODO
+    inVars[crit_var] = crit_point;
+    // get result/ go through tree
     int res = visitScript(tree);
     // clear instance variables
     inVars.clear();
     return res;
   }
 
+  void addUpdate(std::string text, std::complex<double> val) {
+    if(inVars.count(text) == 0) {
+      inVars.insert(make_pair(text, val));
+    } else {
+      inVars[text] = val;
+    }
+    return;
+
+  }
+
   
   virtual int visitScript(FractalParser::ScriptContext *ctx) override {
+    std::cout << "running script\n";
     visitChildren(ctx);
     std::cout << "done running script\n";
     // not sure how to find iterations to return, will also eventaully be a color - maybe for now get an variable
-    return 6;
+    return result;
 
   }
 
 
   //////////////////////////////////////
-  /////////////// commands /////////////
+  /////////////// commands ///////////// done for now h8y
   //////////////////////////////////////
 
-  // return result of expression 
+  // return result of expression ---- set var to expr DONE 
   virtual std::complex<double> visitSET_TO_COM(FractalParser::SET_TO_COMContext *ctx) override {
     std::cout << "in settocom\n";
-    visitChildren(ctx);
-    std::cout << "visited children of settocom\n";
-    return std::complex<double>(4.,3.);
+    std::complex<double> res = visit(ctx->expression());
+
+    // now strat is to not even visit variable (just set it here TODO make a function to set it)
+    std::string text = ctx->variable()->getText();
+
+    // add/update map
+    if(inVars.count(text) == 0) {
+      inVars.insert(make_pair(text, res));
+    } else {
+      inVars[text] = res;
+    }
+    return res;
   }
 
   // return result of the expression 
@@ -97,77 +125,55 @@ public:
 
 
   //////////////////////////////////////
-  /// atom, variable, constant /////////
+  /// atom, variable, constant ///////// done 
   ///////////// numbers ////////////////
 
 
   /*
-  Either a variable or a constant
+  Either a variable or a constant - just return DONE 
   */
-  virtual std::complex<double> visitAtom(FractalParser::AtomContext *ctx) override {
+  // virtual std::complex<double> visitAtom(FractalParser::AtomContext *ctx) override {
 
-  return visitChildren(ctx);
+  // return visitChildren(ctx);
+  // }
+
+  // want to just return the value - it should ALWAYS already be in map DONE 
+  virtual std::complex<double> visitVariable(FractalParser::VariableContext *ctx) override {
+    std::cout << ctx->getText() << "\n";
+    return inVars[ctx->getText()];
   }
+  // // D
+  // virtual std::complex<double> visitConstant(FractalParser::ConstantContext *ctx) override {
+  //   // children will garunteed return a complex number, so hopefully this is fine 
+  //   return visitChildren(ctx);
+  // }
 
 
-  /*
-  This is simply a vairable, will have a value which is a complex number
-  Will only want to update variables at speicific times, like looping
-  z = z^2 + z + 45, we only want to update the value of z when one iteration
-  ends
-  Returns: value of variable at last assignment
-  */
-   virtual std::complex<double> visitVariable(FractalParser::VariableContext *ctx) override {
-    /* 
-    - add variable to the instance variable map if not there - and assign it a value based on the script/ critical point 
-    - really should always have a value. 
-    */
-
-    std::complex<double> val;
-    std::string text = ctx->getText();
-
-    // check if variable is in hashmap 
-
-    // variable in map
-    if (inVars.count(text) != 0) {
-      // currVar = ctx->getText();
-      // get value
-    // not in map 
-    } else {
-      // TODO get this from user
-      std::complex<double> critPoint(1.2,3.6);
-      inVars.insert(make_pair(text, critPoint));
-      // set to curr ---- for now, with the par and stuff will want to do different stuff 
-      // currVar = ctx->getText();
-    }
-
-    val = inVars[text];
-
-    return val;
-  }
-
-  virtual std::complex<double> visitConstant(FractalParser::ConstantContext *ctx) override {
-    // children will garunteed return a complex number, so hopefully this is fine 
-    return visitChildren(ctx);
-  }
-
-
-  // for pow expression - I get the value a different way, so this is just for 
-  // complex numbers
+  // for pow expression and loop - I get the value a different way, so this is just for 
+  // complex numbers - n is just real part DONE 
   virtual std::complex<double> visitN(FractalParser::NContext *ctx) override {
-    /// int n = stoi(ctx->n()->getText());
-    return std::complex<double>(0.,0.);
+    double n = stod(ctx->getText());
+    std::cout << n << "n\n";
+    return std::complex<double>(n,0.);
   }
 
-  // real part of complex number
+  // real part of complex number DONE 
   virtual std::complex<double> visitCpx_number_re(FractalParser::Cpx_number_reContext *ctx) override {
-    // (text, 0)
-    return std::complex<double>(1.,0.);
+    double n = stod(ctx->getText());
+    return std::complex<double>(n,0.);
   }
 
+  // DONE 
   virtual std::complex<double> visitCpx_number_im(FractalParser::Cpx_number_imContext *ctx) override {
-    // check if it is just i, if it is, then (0,1) otherwise (0,text-i)
-    return std::complex<double>(0.,1.);
+    std::string txt = ctx->getText();
+    // jsut i so 1
+    if(txt.length() == 1) {
+      return std::complex<double>(0.,1.);
+    } else {
+      txt.pop_back();
+      double n = stod(txt);
+      return std::complex<double>(0.,n);
+    }
   }
 
 
@@ -176,7 +182,7 @@ public:
   //////////// numbers /////////////////
 
   //////////////////////////////////////
-  //////////  EXPRESSIONS //////////////
+  //////////  EXPRESSIONS ////////////// done for now
   //////////////////////////////////////
 
   /*
@@ -189,110 +195,79 @@ public:
  This is either a constant or a variable 
  Return the value of that constant or variable
  */
-  virtual std::complex<double> visitSIGNED_ATOM_EXP(FractalParser::SIGNED_ATOM_EXPContext *ctx) override {\
+  virtual std::complex<double> visitSIGNED_ATOM_EXP(FractalParser::SIGNED_ATOM_EXPContext *ctx) override {
 
-    // has a signed applied to it here, get value of atom, then apply the sign to it if there is one
-
-    // visitChildren(ctx);
-
-    return std::complex<double>(4.0,3.1);
+    std::complex<double> res = visitChildren(ctx);
+    if(ctx->MINUS()) {
+      res = std::complex<double>(-real(res), -imag(res));
+    }
+    
+    return res;
   }
 
   // might have to do some special order of operations stuff here, but don't really think so
   virtual std::complex<double> visitPAREN_EXP(FractalParser::PAREN_EXPContext *ctx) override {
-    return visitChildren(ctx);
+    std::cout << "in paren\n";
+    std::complex<double> res = visit(ctx->expression()); //visitChildren(ctx);
+    std::cout << res << "ressss\n";
+    // return visitChildren(ctx) ---- THIS SHOULD WORK BUT ISNT TODOOD
+    return res;
   }
 
   // this is only allowed for z^n when n is a positive integer which is error checked in parser
   virtual std::complex<double> visitPOW_EXP(FractalParser::POW_EXPContext *ctx) override {
 
-    /* 
-    - recursively get the variable/(expression to be assigned a variable) we are powing 
-    - put it to the power of n and assign
-    */
+    std::cout << ctx->getText() << "      --- pow exp\n";
 
-   std::cout << ctx->getText() << "      --- pow exp\n";
-
-    // get n - this is the only use of n, so don't even need an override for it
+    // get n 
     int n = stoi(ctx->n()->getText());
-
-    // visit all children (should eval expressions and for now get currVar right) - really only
-    // need to visit expression on right
-    visitChildren(ctx);
-
-    // FOR NOW: need to look up what val currVal is at and put it to the power of n 
-    // std::complex<double> inVarVal(inVars[currVar]);
-    // std::cout << inVarVal << "\n"; // 
-    // std::complex<double> result = pow(inVarVal, n);
-    // inVars[currVar] = pow(inVarVal, n);
-    // std::cout << inVars[currVar] << "\n"; //
-
-    // guesss ctx works as a return, don't really need to return anything
-    // return result;
-    return std::complex<double>(3., 2.);
+    // get expression - always cpx num
+    std::complex<double> expr = visit(ctx->expression());
+    return pow(expr, n);
   }
 
   virtual std::complex<double> visitPLUS_EXP(FractalParser::PLUS_EXPContext *ctx) override {
-    /*
-    - FOR NOW: assuming z is being set to result of this, could return result but don't need to
-    - recursively visit expression on left of +
-    - recursively visit expression on right of + 
-    - add them and assign
-    - just have expressions return result
-    */
-
-    // get left side exp
-    // antlrcpp::Any left = ctx->left(); //  - not working
-
     std::cout << "plus\n";
-
-    // this works
-
-   
-
     std::complex<double> left = visit(ctx->expression(0));
     std::complex<double> right = visit(ctx->expression(1));
 
-    std::cout << "plus done\n";
-
-
+    std::cout << left << right <<left+right <<"plus done\n";
 
     return left+right;
-    
-
- 
-
-
-    // antlrcpp::Any l = visitChildren(ctx->expression(0));
-    // antlrcpp::Any r = ctx->expression(1);
-
-    // std::complex<double> toR = l+r;
-
-    //return toR;
-    // return ctx;
 
   }
 
     virtual std::complex<double> visitTIMES_EXP(FractalParser::TIMES_EXPContext *ctx) override {
-    return visitChildren(ctx);
+    std::cout << "times\n";
+    std::complex<double> left = visit(ctx->expression(0));
+    std::cout << "left" << left << "\n";
+    std::complex<double> right = visit(ctx->expression(1));
+    std::cout << right << left*right << "tims done\n";
+    return left*right;
   }
 
     virtual std::complex<double> visitDIVIDE_EXP(FractalParser::DIVIDE_EXPContext *ctx) override {
-    return visitChildren(ctx);
+      std::cout << "divde\n";
+      std::complex<double> left = visit(ctx->expression(0));
+      std::complex<double> right = visit(ctx->expression(1));
+      return left/right;
   }
 
   virtual std::complex<double> visitMINUS_EXP(FractalParser::MINUS_EXPContext *ctx) override {
-    return visitChildren(ctx);
+    std::complex<double> left = visit(ctx->expression(0));
+    std::complex<double> right = visit(ctx->expression(1));
+    return left-right;
   }
-
+    // THIS IS REALS ONLY - SO NOT FOR NOW 
     virtual std::complex<double> visitREDUCE_MOD_EXP(FractalParser::REDUCE_MOD_EXPContext *ctx) override {
     return visitChildren(ctx);
   }
 
+  // DO THESE LATER -- HARD 
   virtual std::complex<double> visitRE_FCN_EXP(FractalParser::RE_FCN_EXPContext *ctx) override {
     return visitChildren(ctx);
   }
-
+    // DO THESE LATER -- HARD 
     virtual std::complex<double> visitCPX_FCN_EXP(FractalParser::CPX_FCN_EXPContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -305,64 +280,57 @@ public:
 
 
   //////////////////////////////////////
-  /////////// CONDITIONS ///////////////
+  /////////// CONDITIONS /////////////// 
   //////////////////////////////////////
 
-    virtual bool visitSTOPS_COND(FractalParser::STOPS_CONDContext *ctx) override {
+  // TODO 
+  virtual bool visitSTOPS_COND(FractalParser::STOPS_CONDContext *ctx) override {
     return visitChildren(ctx);
   }
 
   virtual bool visitCOMP_COND(FractalParser::COMP_CONDContext *ctx) override {
-    return visitChildren(ctx);
+    // get awhat type it is, do thing for each one
+    std::complex<double> left = visit(ctx->expression(0));
+    std::complex<double> right = visit(ctx->expression(1));
+
+
+    // this works assuming everything is a complex number, which we are for now
+    if(ctx->GT() && ctx->EQUALS()) {
+      return abs(left) >= abs(right);
+    } else if(ctx->LT() && ctx->EQUALS()) {
+      return abs(left) <= abs(right);
+    } else if(ctx->GT()) {
+      return abs(left) > abs(right);
+    } else if(ctx->LT()) {
+      return abs(left) < abs(right);
+    } else if(ctx->EQUALS()) {
+      return abs(left) == abs(right);
+    } else {
+      std::cout << "------- ERROR ------ couldn't find token for comp command\n";
+      return false;
+    }
+
   }
 
+  // DONE
   virtual bool visitVANISHES_COND(FractalParser::VANISHES_CONDContext *ctx) override {
-    return visitChildren(ctx);
+    std::cout << "in vanishes cond\n";
+    std::complex<double> expr = visit(ctx->expression());
+    return abs(expr) < minRadius;
   }
 
+  // DONE
   virtual bool visitESCAPES_COND(FractalParser::ESCAPES_CONDContext *ctx) override {
-    visitChildren(ctx);
-    return true;
+    std::cout << "in scapes cond\n";
+    std::complex<double> expr = visit(ctx->expression());
+    return abs(expr) > maxRadius;
+    
   }
 
+  // TODO 
   virtual bool visitCOMB_COND(FractalParser::COMB_CONDContext *ctx) override {
     return visitChildren(ctx);
   }
-
-
-
-
-  //   // will return a boolean
-  //   virtual antlrcpp::Any visitCondition(FractalParser::ConditionContext *ctx) override {
-  //     std::cout << "condition says: ";
-  //     std::cout << ctx->getText() <<"\n";
-
-  //     std::string t = ctx->toStringTree();
-  //     std::cout << "string tree: " << t << "\n";
-
-
-
-  //     // test all the methods in the java thing:
-
-    
-  //     // antlrcpp::Any be = ctx->getChild(0); - desont work 
-  //     int be = ctx->depth(); // works 
-  //     std::cout << "depth: " << be << "\n";
-
-  //     // int ce = ctx->getChildCount(); - doesnt owkr
-  //     // antlrcpp::Any ce = ctx->getParent(); - ^^
-  //     // antlrcpp::Any ce = ctx->getPayload();- ^^
-  //     // antlrcpp::Any ce = ctx->getRuleContext(); - ^^
-
-  //     antlrcpp::Any parent = ctx->parent; // works!
-
-  //     // antlrcpp:Any chi = ctx->child(1);
-
-      
-  //   return visitChildren(ctx);
-  // }
-
-  };
 
 
 
@@ -373,156 +341,98 @@ public:
 
 
 
-  //////////////////////////////////////
-  //////////////  LOOPS ////////////////
-  //////////////////////////////////////
+  ////////////////////////////////////
+  ////////////  LOOPS ////////////////      DONE 
+  ////////////////////////////////////
 
-  //   virtual antlrcpp::Any visitLoopDo(FractalParser::LoopDoContext *ctx) override {
+    // DONE
+    virtual int visitLoopDo(FractalParser::LoopDoContext *ctx) override {
 
-  //     antlrcpp::Any var = ctx->variable();
-  //     std::string varText = ctx->variable()->getText();
-  //     antlrcpp::Any exp = ctx->expression();
-  //     antlrcpp::Any condit = ctx->condition();
+      std::cout << "in loopdo\n";
 
-  //     // put variable in hashamp (with user defined crit point as starting value)
-  //     std::complex<double> varVal = visitVariable(var);
+      // not using this anymore but would rather
+      // antlrcpp::Any condit = ctx->condition();
+      int counter = 0; 
+      do {
+        // visit all commands - for now just throw out result
+        int i = 0;
+        while(ctx->command(i)) {
+          visit(ctx->command(i));
+          i++;
+        }
+        // increment
+        counter++;
+        std::cout << "visited commands\n";
+      }
+      while (!visit(ctx->condition()) && (counter < iters));
 
-  //     int counter = 0; 
+    std::cout << counter << "\n";
+    result = counter;
+    return counter;
+  }
 
-  //     do {
-  //       // eval expression 
-  //       std::complex<double> eval = visitExpression(exp);
-  //       // update 
-  //       inVars[varText] = eval;
-  //       // increment
-  //       counter++;
-  //     }
-  //     while (!visitCondition(condit));
+  // iterate expr on var until comd DONE 
+  virtual int visitLoopIterateOn(FractalParser::LoopIterateOnContext *ctx) override {
+    std::cout << "in loop iterate on\n";
+    // antlrcpp::Any expr = ctx->expression();
+    std::string var = ctx->variable()->getText();
+    int counter = 0;
+    do {
+      std::cout << "in do\n";
+      // eval expr
+      std::complex<double> res = visit(ctx->expression());
+      // set to var -- make more efficent by only looking up on first visit or something
+      addUpdate(var, res);
+      counter++;
+    }
+    while(!visit(ctx->condition()) && (counter < iters));
 
+    result = counter;
+    return counter;
 
-
-
-
-
-
-  //   // return visitChildren(ctx);
-  // }
-
-
-
-
-
-  //     // ITERATE expression 'until' condition
-  //   virtual antlrcpp::Any visitLoopIterateEmpty(FractalParser::LoopIterateEmptyContext *ctx) override {
-  //     printf("visited loop iterate empty node\n");
-
-
-
-  //     // std::string txt = ctx->getText();
-
-  //     // expression should be second child
-
-  //     // std::cout << "loop node says: ";
-
-  //     // std::cout << txt << "\n";
-
-  //     // for this type of loop, variable is taken to be z, so z is what we are resetting - there need to be a z
-  //     // some way to get the chldren or get the parse tree????? 
-
-  //     // one free critical point -- 
-
-  //     // std::complex<double> z(0., 0.);
+  }
 
 
 
-     
+    // ITERATE expression 'until' condition - var taken to be z  DONE 
+    virtual int visitLoopIterateEmpty(FractalParser::LoopIterateEmptyContext *ctx) override {
+      std::cout << "in loop iterate empty\n";
+      // variable is taken to be z - (the one to iterate)
+      std::string var = "z";
+      int counter = 0;
+      do {
+        std::complex<double> res = visit(ctx->expression());
+        addUpdate(var, res);
+        counter++;
+      }
+      while(!visit(ctx->condition()) && (counter < iters));
 
-  //     // antlrcpp::Any exp = ctx->getChild(1);
-  //     // int exp = ctx->getChildCount();
-  //     antlrcpp::Any exp = ctx->expression();
-
-  //     antlrcpp::Any condit = ctx->condition();
-
-
-  //     do {
-  //       // eval expression
-  //       // -- maybe throw in the result as a parameter
-  //       std::complex<double> result = visitExpression(exp);
-  //       // update changing varaible
-
-
-  //     } while(true);
-    
-
-  //     antlrcpp::Any c = visitCondition(condit);
-
-  //     // iterate z
-
-
-
-
-  //     // for (int i = 1; i < iters; i++) {
-
-  //     //     // std::complex<double> z2 = z*z + c;
-  //     //     if(abs(z2) > 4) {
-  //     //       return i;
-  //     //     }
-  //     //     reset
-  //     // }
-
-
-
-
-
-
-  //     // std::cout << "here\n";
-
-
-
-  //     // antlrcpp::Any eval = visitExpression(exp);
-
-  //     //return visitChildren(ctx);
-
-  //     // visit
-
-  //     return ctx;
-
-    
-  //     //return visitChildren(ctx);
+      result = counter;
+      return counter;
       
-  // }
+    }
+
+    // reapeat n times command - n must be positivie integer  DONE 
+    virtual antlrcpp::Any visitLoopRepeat(FractalParser::LoopRepeatContext *ctx) override {
+      std::cout << "in loop reapeat\n";
+      int n = stoi(ctx->n()->getText());
+      for(int i = 0; i < n; i++) {
+        visit(ctx->command());
+      }
+      return ctx;
+    }
+
+
 
   //////////////// end /////////////////
   //////////////  LOOPS ////////////////
   //////////////////////////////////////
 
+  };
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-  //   virtual antlrcpp::Any visitExpression(FractalParser::ExpressionContext *ctx) override {
-
-  //     std::string txt = ctx->getText();
-
-  //     // expression should be second child
-
-  //     std::cout << "expression says: ";
-
-  //     std::cout << txt << "\n";
-
-
-  //   return visitChildren(ctx);
-  // }
 
 
 

@@ -12,6 +12,7 @@
 #include "FractalVisitor.h"
 #include "antlr4-runtime.h"
 #include "MyVisitor.h"
+#include <complex.h>
 // #include "libantlr4-runtime.a"
 
 
@@ -53,12 +54,21 @@ extern "C" {
     // call script method - this scriptContext contains method to access the text caputred by the rule
     FractalParser::ScriptContext* tree = parser.script();
 
-    std::string var = "z";
+    // variable to set critical point to - FOR DYN SPACE ONLY - have to figure this out later
+    std::string crit = "z";
+    // variable to set screen point to 
+    std::string screen = "c";
+    std::complex<double> crit_point(0.,0.);
     // visitor 
-    myVisitor visitor(64, 4, var); 
+    myVisitor visitor(64, 4., 0.1, crit, screen, crit_point); 
+
+
+
+
+    
 
     // do loop here 
-    int iterations = visitor.evalPoint(std::complex<double>(0.,0.), tree);
+    int iterations = visitor.evalPoint(std::complex<double>(1.5,1.5), tree);
     
 
     // visitor.visitScript(tree);
