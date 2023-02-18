@@ -29,9 +29,9 @@ createModule().then((Module) => {
   /// Loops
   // run_script("iterate z^2 + c on z until z > 4 + 4i."); // 2
   // run_script("do set z to z^2+c. until z escapes."); // 2
-  // run_script("iterate z^2 + c until z escapes."); // 2
+  run_script("iterate z^2 + c until z stops."); // 2
   // run_script("repeat 4 times set z to z^2.");
-  run_script("set z to (4 + 3) * -i.");
+  //run_script("if 6 > 5 xor 4 > 6 then set z to (4 + 3) * -i.");
   //myRun = run_script;
   // console.log("ran");
   document.querySelector("#inBtn").addEventListener("click", () => {

@@ -20,6 +20,11 @@
     std::unordered_map<std::string,std::complex<double>> inVars = {};
 
 
+    ////// this stuff for stops 
+    std::complex<double> prev_val;
+    bool prev_val_def = false;
+
+
     int result;
     
     // how many iterations to go to get to the max or min radius 
@@ -76,7 +81,7 @@ public:
 
 
   //////////////////////////////////////
-  /////////////// commands ///////////// done for now h8y
+  /////////////// commands ///////////// done for now 
   //////////////////////////////////////
 
   // return result of expression ---- set var to expr DONE 
@@ -280,14 +285,30 @@ public:
 
 
   //////////////////////////////////////
-  /////////// CONDITIONS /////////////// 
+  /////////// CONDITIONS ///////////////  done
   //////////////////////////////////////
 
-  // TODO 
+  // DONE
   virtual bool visitSTOPS_COND(FractalParser::STOPS_CONDContext *ctx) override {
-    return visitChildren(ctx);
+    std::cout << "in stops command\n";
+    if(!prev_val_def) {
+      prev_val_def = true;
+      std::cout << "prev not there\n";
+      // can do this once I make the return types of real functions and cpx function std::complex<double>
+      // prev_val = visit(ctx->expression());
+      std::complex<double> p = visit(ctx->expression());
+      prev_val = p;
+
+      return false;
+    } else {
+      std::complex<double> val = visit(ctx->expression());
+      bool toR = (val == prev_val);
+      prev_val = val;
+      return toR;
+    }
   }
 
+  // DONE
   virtual bool visitCOMP_COND(FractalParser::COMP_CONDContext *ctx) override {
     // get awhat type it is, do thing for each one
     std::complex<double> left = visit(ctx->expression(0));
@@ -327,9 +348,27 @@ public:
     
   }
 
-  // TODO 
+  // DONE
   virtual bool visitCOMB_COND(FractalParser::COMB_CONDContext *ctx) override {
-    return visitChildren(ctx);
+
+    std::cout << "in comb cond\n";
+    bool left = visit(ctx->condition(0));
+    bool right = visit(ctx->condition(1));
+
+    if(ctx->XOR()) {
+      return ((left || right) && !(left && right));
+    } else if(ctx->OR()) {
+      return left || right;
+    } else if(ctx->AND()) {
+      return left && right;
+    } else {
+      std::cout << "------ERROR------- comb cond no tokens found\n";
+      return false;
+    }
+
+    
+
+    //return visitChildren(ctx);
   }
 
 
@@ -426,6 +465,40 @@ public:
 
   //////////////// end /////////////////
   //////////////  LOOPS ////////////////
+  //////////////////////////////////////
+
+
+  //////////////////////////////////////
+  //////////////  IFS //////////////////   done 
+  //////////////////////////////////////
+
+  virtual antlrcpp::Any visitIF_THEN(FractalParser::IF_THENContext *ctx) override {
+    std::cout << "in if then\n";
+    bool cond = visit(ctx->condition());
+    if(cond) {
+      std::cout << "VISITED!!!!\n";
+      visit(ctx->command());
+    }
+
+    return ctx;
+  }
+
+
+  virtual antlrcpp::Any visitIF_THEN_ELSE(FractalParser::IF_THEN_ELSEContext *ctx) override {
+    std::cout << "in if else\n";
+    bool cond = visit(ctx->condition());
+    if(cond) {
+      visit(ctx->command(0));
+    } else {
+      visit(ctx->command(1));
+    }
+    return ctx;
+  }
+
+
+
+  ////////////// end ///////////////////
+  //////////////  IFS //////////////////
   //////////////////////////////////////
 
   };

@@ -63,10 +63,6 @@ extern "C" {
     myVisitor visitor(64, 4., 0.1, crit, screen, crit_point); 
 
 
-
-
-    
-
     // do loop here 
     int iterations = visitor.evalPoint(std::complex<double>(1.5,1.5), tree);
     
