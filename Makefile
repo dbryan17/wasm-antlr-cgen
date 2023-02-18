@@ -6,7 +6,7 @@ HEADERS = myVisitor.h
 SOURCES = $(wildcard *.cpp)
 OBJECTS = $(SOURCES:%.cpp=%.o)
 
-EMFLAGS =  -O3 -s NO_EXIT_RUNTIME=1 -s USE_GLFW=3 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s "EXPORTED_RUNTIME_METHODS=['ccall','cwrap']" -s "EXPORTED_FUNCTIONS=['_malloc', '_free', _run_script]" -s ALLOW_MEMORY_GROWTH -s ENVIRONMENT='web' -s MODULARIZE=1 -s "EXPORT_NAME='createModule'"
+EMFLAGS =  -O3 -s NO_EXIT_RUNTIME=1 -s USE_GLFW=3 -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s ALLOW_MEMORY_GROWTH -s "EXPORTED_RUNTIME_METHODS=['ccall','cwrap']" -s "EXPORTED_FUNCTIONS=['_malloc', '_free', _run_script]" -s ENVIRONMENT='web' -s MODULARIZE=1 -s "EXPORT_NAME='createModule'"
 all: main.wasm
 
 clean: 
