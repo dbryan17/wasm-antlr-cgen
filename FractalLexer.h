@@ -18,13 +18,13 @@ public:
     T__20 = 21, T__21 = 22, T__22 = 23, T__23 = 24, T__24 = 25, T__25 = 26, 
     T__26 = 27, T__27 = 28, T__28 = 29, T__29 = 30, T__30 = 31, T__31 = 32, 
     T__32 = 33, T__33 = 34, T__34 = 35, T__35 = 36, T__36 = 37, T__37 = 38, 
-    T__38 = 39, T__39 = 40, T__40 = 41, T__41 = 42, T__42 = 43, T__43 = 44, 
-    T__44 = 45, T__45 = 46, POS_INT = 47, NUMBER = 48, CPX_NUMBER_IM = 49, 
-    PIXEL = 50, ITERATE = 51, EXP = 52, COS = 53, SIN = 54, TAN = 55, COSH = 56, 
-    SINH = 57, TANH = 58, RE = 59, IM = 60, BAR = 61, ARG = 62, LOG = 63, 
-    SQRT = 64, ARCCOS = 65, ARCSIN = 66, ARCTAN = 67, POW = 68, PLUS = 69, 
-    MINUS = 70, TIMES = 71, DIVIDE = 72, EQUALS = 73, GT = 74, LT = 75, 
-    VARIABLE = 76, LPAREN = 77, RPAREN = 78, WS = 79, COMMENT = 80
+    T__38 = 39, T__39 = 40, T__40 = 41, T__41 = 42, T__42 = 43, POS_INT = 44, 
+    NUMBER = 45, CPX_NUMBER_IM = 46, PIXEL = 47, ITERATE = 48, EXP = 49, 
+    COS = 50, SIN = 51, TAN = 52, COSH = 53, SINH = 54, TANH = 55, RE = 56, 
+    IM = 57, BAR = 58, ARG = 59, LOG = 60, SQRT = 61, ARCCOS = 62, ARCSIN = 63, 
+    ARCTAN = 64, POW = 65, PLUS = 66, MINUS = 67, TIMES = 68, DIVIDE = 69, 
+    EQUALS = 70, GT = 71, LT = 72, OR = 73, AND = 74, XOR = 75, VARIABLE = 76, 
+    LPAREN = 77, RPAREN = 78, WS = 79, COMMENT = 80
   };
 
   FractalLexer(antlr4::CharStream *input);

@@ -1,12 +1,12 @@
 
-// Generated from Fractal.g4 by ANTLR 4.7.1
 
+// Generated from Fractal.g4 by ANTLR 4.7.1
 
 #pragma once
 
+
 #include "antlr4-runtime.h"
 #include "FractalVisitor.h"
-#include <complex.h>
 
 
 /**
@@ -16,15 +16,43 @@
 class  FractalBaseVisitor : public FractalVisitor {
 public:
 
-  virtual int visitScript(FractalParser::ScriptContext *ctx) override {
+ virtual int visitScript(FractalParser::ScriptContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCommand(FractalParser::CommandContext *ctx) override {
+  virtual std::complex<double> visitSET_TO_COM(FractalParser::SET_TO_COMContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitN(FractalParser::NContext *ctx) override {
+  virtual std::complex<double> visitDEFAULT_TO_COM(FractalParser::DEFAULT_TO_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitBLOCK_COM(FractalParser::BLOCK_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitCOLOR_COM(FractalParser::COLOR_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitPAR_COM(FractalParser::PAR_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitDYN_COM(FractalParser::DYN_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitIF_THEN_COM(FractalParser::IF_THEN_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitLOOP_COM(FractalParser::LOOP_COMContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual std::complex<double> visitN(FractalParser::NContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -36,11 +64,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCpx_number_re(FractalParser::Cpx_number_reContext *ctx) override {
+  virtual std::complex<double> visitCpx_number_re(FractalParser::Cpx_number_reContext *ctx) override {
     return visitChildren(ctx);
   }
 
-    virtual antlrcpp::Any visitCpx_number_im(FractalParser::Cpx_number_imContext *ctx) override {
+  virtual std::complex<double> visitCpx_number_im(FractalParser::Cpx_number_imContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -60,15 +88,15 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitTIMES_EXP(FractalParser::TIMES_EXPContext *ctx) override {
+  virtual std::complex<double> visitTIMES_EXP(FractalParser::TIMES_EXPContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitDIVIDE_EXP(FractalParser::DIVIDE_EXPContext *ctx) override {
+  virtual std::complex<double> visitDIVIDE_EXP(FractalParser::DIVIDE_EXPContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitMINUS_EXP(FractalParser::MINUS_EXPContext *ctx) override {
+  virtual std::complex<double> visitMINUS_EXP(FractalParser::MINUS_EXPContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -80,39 +108,59 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitREDUCE_MOD_EXP(FractalParser::REDUCE_MOD_EXPContext *ctx) override {
+  virtual std::complex<double> visitREDUCE_MOD_EXP(FractalParser::REDUCE_MOD_EXPContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitRE_FCN_EXP(FractalParser::RE_FCN_EXPContext *ctx) override {
+  virtual std::complex<double> visitRE_FCN_EXP(FractalParser::RE_FCN_EXPContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitPAREN_EXP(FractalParser::PAREN_EXPContext *ctx) override {
+  virtual std::complex<double> visitPAREN_EXP(FractalParser::PAREN_EXPContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCPX_FCN_EXP(FractalParser::CPX_FCN_EXPContext *ctx) override {
+  virtual std::complex<double> visitCPX_FCN_EXP(FractalParser::CPX_FCN_EXPContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCondition(FractalParser::ConditionContext *ctx) override {
+  virtual bool visitSTOPS_COND(FractalParser::STOPS_CONDContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitIf_then(FractalParser::If_thenContext *ctx) override {
+  virtual bool visitCOMP_COND(FractalParser::COMP_CONDContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitLoopDo(FractalParser::LoopDoContext *ctx) override {
+  virtual bool visitVANISHES_COND(FractalParser::VANISHES_CONDContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitLoopIterateOn(FractalParser::LoopIterateOnContext *ctx) override {
+  virtual bool visitESCAPES_COND(FractalParser::ESCAPES_CONDContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitLoopIterateEmpty(FractalParser::LoopIterateEmptyContext *ctx) override {
+  virtual bool visitCOMB_COND(FractalParser::COMB_CONDContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitIF_THEN(FractalParser::IF_THENContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitIF_THEN_ELSE(FractalParser::IF_THEN_ELSEContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual int visitLoopDo(FractalParser::LoopDoContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual int visitLoopIterateOn(FractalParser::LoopIterateOnContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual int visitLoopIterateEmpty(FractalParser::LoopIterateEmptyContext *ctx) override {
     return visitChildren(ctx);
   }
 

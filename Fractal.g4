@@ -54,7 +54,7 @@ condition : expression (GT | LT | GT EQUALS | LT EQUALS | EQUALS) expression #CO
             expression 'escapes' #ESCAPES_COND |
             expression 'vanishes' #VANISHES_COND |
             expression 'stops' #STOPS_COND |
-            condition ('or' | 'and' | 'xor') condition #COMB_COND // will probably want tokens for or and xor
+            condition (OR | AND | XOR) condition #COMB_COND // will probably want tokens for or and xor
             ;
 
 
@@ -164,6 +164,11 @@ DIVIDE : '/' ;
 EQUALS : '=' ; 
 GT : '>' ;
 LT : '<' ; 
+
+// condition stuff
+OR: 'or';
+AND: 'and';
+XOR:  'xor';
 
 VARIABLE : ('a' .. 'z')+ ;
 
