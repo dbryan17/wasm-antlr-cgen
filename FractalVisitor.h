@@ -50,9 +50,9 @@ public:
 
     virtual std::complex<double> visitAtom(FractalParser::AtomContext *context) = 0;
 
-    virtual antlrcpp::Any visitCpx_function(FractalParser::Cpx_functionContext *context) = 0;
+    virtual std::complex<double> visitCpx_function(FractalParser::Cpx_functionContext *context) = 0;
 
-    virtual antlrcpp::Any visitReal_function(FractalParser::Real_functionContext *context) = 0;
+    virtual std::complex<double> visitReal_function(FractalParser::Real_functionContext *context) = 0;
 
     virtual std::complex<double> visitPOW_EXP(FractalParser::POW_EXPContext *context) = 0;
 
