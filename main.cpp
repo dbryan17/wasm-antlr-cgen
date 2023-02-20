@@ -85,9 +85,9 @@ extern "C" {
 
     int modcount = 0;
 
-    for (int x = 0; x < floor(newCanWidth); x++)
+    for (int x = 0; x < floor(newCanWidth); ++x)
   {
-    for (int y = 0; y < floor(newCanHeight); y++)
+    for (int y = 0; y < floor(newCanHeight); ++y)
     {
       // loop is 82944000
       // happens 829 times

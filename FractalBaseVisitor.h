@@ -76,11 +76,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCpx_function(FractalParser::Cpx_functionContext *ctx) override {
+  virtual std::complex<double> visitCpx_function(FractalParser::Cpx_functionContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitReal_function(FractalParser::Real_functionContext *ctx) override {
+  virtual std::complex<double> visitReal_function(FractalParser::Real_functionContext *ctx) override {
     return visitChildren(ctx);
   }
 
