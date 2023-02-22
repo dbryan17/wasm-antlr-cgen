@@ -85,6 +85,8 @@ extern "C" {
 
     int modcount = 0;
 
+    visitor.cgen(tree);
+
     for (int x = 0; x < floor(newCanWidth); ++x)
   {
     for (int y = 0; y < floor(newCanHeight); ++y)
