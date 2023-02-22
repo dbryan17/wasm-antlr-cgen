@@ -4,8 +4,10 @@
 #include <iostream>
 #include "antlr4-runtime.h"
 #include <complex.h>
+#include <string>
+#include <sstream>
 #include <unordered_map>
-
+#include <stdlib.h>
 
 
   // If c does not appear, then FractalStream will draw a picture in the dynamical plane. 
@@ -39,14 +41,60 @@
     std::string screen_var;
     std::complex<double> crit_point;
 
+    /////////////////
+    //// code gen ///
+    /////////////////
+    //std::string &bl = "s";
+    std::stringstream output;
+    int loopCounter = 0;
+
+    
+
+    // std::cout << output << "\n";
+
+    // std::cout << "" << output << "   string stream\n";
+
+
+
+
+
 
 public: 
   myVisitor(int iters, double maxRadius, double minRadius, std::string& crit_var, std::string& screen, std::complex<double> crit_point) : iters(iters), maxRadius(maxRadius), minRadius(minRadius), crit_var(crit_var), screen_var(screen), crit_point(crit_point) {}
 
+
+
+  // this is the main cgen function - for now just return have it return an int - and make this part just a function for calculating the point
+  std::string cgen(FractalParser::ScriptContext* tree) {
+    output << "#include <complex.h>\n";
+    // maybe include that other stuff taht doesn't change here, and jsut call gen 
+    output << "int gen(std::complex<double> point) {\n";
+    // screen var to point 
+    output << "std::complex<double> " << screen_var << " = point;\n";
+    // critical value 
+    output << "std::complex<double> " << crit_var << " = " << crit_point << ";\n";
+
+    // int res = visitScript(tree);
+    visitScript(tree);
+   //output << "return result" << itoa(loopCounter) << ";\n}\n";
+    output << "return result0" << ";\n}\n";
+    std::cout << output.str() << "\n";
+
+    // do I need to redefine critical point each time? and the other "global varaibles"? 
+    // or only the variables changing for each pass?
+
+    return output.str();
+
+  }
+
   // function takes a point in complex plane, and evaluates it with the script
   int evalPoint(std::complex<double> point, FractalParser::ScriptContext* tree) {
 
-    // std:cout << "in eval point\n";
+
+    // output.str("hello");
+    // output << "hello";
+
+    // std::cout << "in eval point\n";
 
     // set variable we are changing to the point
     inVars[screen_var] = point;
@@ -87,7 +135,7 @@ public:
 
   // return result of expression ---- set var to expr DONE 
   virtual std::complex<double> visitSET_TO_COM(FractalParser::SET_TO_COMContext *ctx) override {
-    // std:cout << "in settocom\n";
+    // std::cout << "in settocom\n";
     std::complex<double> res = visit(ctx->expression());
 
     // now strat is to not even visit variable (just set it here TODO make a function to set it)
@@ -150,6 +198,10 @@ public:
   // want to just return the value - it should ALWAYS already be in map DONE 
   virtual std::complex<double> visitVariable(FractalParser::VariableContext *ctx) override {
     // std:cout << ctx->getText() << "\n";
+
+    // need to return the text - sjust printing z won't work because different syntax based on what expression its in
+    // for now just do it this way - wont really work but for testing
+    output << ctx->getText();
     return inVars[ctx->getText()];
   }
   // // D
@@ -164,6 +216,7 @@ public:
   virtual std::complex<double> visitN(FractalParser::NContext *ctx) override {
     double n = stod(ctx->getText());
     // std:cout << n << "n\n";
+    output << n;
     return std::complex<double>(n,0.);
   }
 
@@ -207,8 +260,14 @@ public:
  */
   virtual std::complex<double> visitSIGNED_ATOM_EXP(FractalParser::SIGNED_ATOM_EXPContext *ctx) override {
 
+    // cgen - try this for now but will prob have to do it recursively 
+    
+
+
+
     const std::complex<double> &res = visitChildren(ctx);
     if(ctx->MINUS()) {
+      output << "-";
       return std::complex<double>(-real(res), -imag(res));
     }
     
@@ -229,16 +288,23 @@ public:
 
     // std:cout << ctx->getText() << "      --- pow exp\n";
 
+    
+
     // get n 
     int n = stoi(ctx->n()->getText());
+    output << "pow("; 
     // get expression - always cpx num
     const std::complex<double> &expr = visit(ctx->expression());
+    output << "," << n << ")";
     return pow(expr, n);
   }
 
   virtual std::complex<double> visitPLUS_EXP(FractalParser::PLUS_EXPContext *ctx) override {
     // std:cout << "plus\n";
     const std::complex<double> &left = visit(ctx->expression(0));
+
+    output << "+";
+
     const std::complex<double> &right = visit(ctx->expression(1));
 
     // std:cout << left << right <<left+right <<"plus done\n";
@@ -347,8 +413,17 @@ public:
 
   // DONE
   virtual bool visitESCAPES_COND(FractalParser::ESCAPES_CONDContext *ctx) override {
+    
+
+    output << "abs(";
+
+
+
     // std:cout << "in scapes cond\n";
     const std::complex<double> &expr = visit(ctx->expression());
+
+    output << ") > " << maxRadius;
+    
     return abs(expr) > maxRadius;
     
   }
@@ -442,17 +517,37 @@ public:
     virtual int visitLoopIterateEmpty(FractalParser::LoopIterateEmptyContext *ctx) override {
       // std:cout << "in loop iterate empty\n";
       // variable is taken to be z - (the one to iterate)
-      const std::string &var = "z";
-      int counter = 0;
-      do {
-        const std::complex<double> &res = visit(ctx->expression());
-        addUpdate(var, res);
-        counter++;
-      }
-      while(!visit(ctx->condition()) && (counter < iters));
 
-      result = counter;
-      return counter;
+
+      // cgen ///////// 
+      
+      // output << "int counter" << itoa(loopCounter) << " = 0\n";
+      output << "int counter0 = 0;\n";
+      // loopCounter++;
+      output << "while(true) {\n";
+      // cgen expression and set to z
+      output << "z = "; 
+      visit(ctx->expression());
+      output << ";\n";
+      output << "counter0++;\n";
+      output << "if(";
+      visit(ctx->condition());
+      //output << "|| " << "counter" << itoa(loopCounter) << " >= " << iters << ") {\n break;\n}\nint result" << itoa(loopCounter) << " = counter" << itoa(loopCounter) << ";\n"; 
+      output << "|| " << "counter0 >= " << iters << ") {\n break;\n}\n}\nint result0 = counter0;\n"; 
+
+
+      // const std::string &var = "z";
+      // int counter = 0;
+      // do {
+      //   const std::complex<double> &res = visit(ctx->expression());
+      //   addUpdate(var, res);
+      //   counter++;
+      // }
+      // while(!visit(ctx->condition()) && (counter < iters));
+
+      // result = counter;
+      // return counter;
+      return 0;
       
     }
 
