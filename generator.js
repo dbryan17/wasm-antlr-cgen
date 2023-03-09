@@ -41,7 +41,7 @@ createModule().then((Module) => {
 
     code = Module.UTF8ToString(strPtr); // read from the allocated memory to the javascript string
 
-    console.log(code);
+    console.log(code.trim());
 
     Module._free(1000); // release the allocated memory
 

@@ -98,6 +98,7 @@ extern "C" {
       ptr[i] = code.at(i);
       std::cout << ptr[i]<< "\n";
     }
+    ptr[code.length()] = '\0';
 
     std::cout << "all done\n";
 
