@@ -48,8 +48,11 @@ extern "C" {
 
   
 
-  EMSCRIPTEN_KEEPALIVE void run_script(const char *stream, int type, double fixedVarRe, double fixedVarIm, double critRe, double critIm, 
-  double startX, double startY, double newCanWidth, double newCanHeight, int width, int height, double widthScale, double heightScale,  uint8_t *ptr) {
+  // EMSCRIPTEN_KEEPALIVE void run_script(const char *stream, int type, double fixedVarRe, double fixedVarIm, double critRe, double critIm, 
+  // double startX, double startY, double newCanWidth, double newCanHeight, int width, int height, double widthScale, double heightScale,  uint8_t *ptr) {
+
+    EMSCRIPTEN_KEEPALIVE void cgen(const char *stream, uint8_t *ptr) {
+      std::cout << "HEREERERE\n";
 
     // below is how they are doing it in online example because that is the more up to date
     // version of antlr, slightly different than how they are doing it in wasm ex, but the 
@@ -79,55 +82,61 @@ extern "C" {
     // variable to set screen point to 
     std::string screen = "c"; // can have this set by the user
     std::complex<double> crit_point(0.,0.); 
-    // visitor 
-    myVisitor visitor(16, 4., 0.1, crit, screen, crit_point);
-    // std:cout << "created visitor\n";
+
+        myVisitor visitor(16, 4., 0.1, crit, screen, crit_point);
+
 
     int modcount = 0;
+    std::cout << "HEREERERE\n";
 
-    visitor.cgen(tree);
+    std::string code = visitor.cgen(tree);
 
-    for (int x = 0; x < floor(newCanWidth); ++x)
-  {
-    for (int y = 0; y < floor(newCanHeight); ++y)
-    {
-      // loop is 82944000
-      // happens 829 times
-      if (((x+1)*(y+1)) % 100000 == 0) {
-        modcount++;
-        std::cout << "mod hit, " << modcount << " times out of 829\n";
-      }
-
-
-
-      double new_x = (((widthScale * x) + startX) - width / 2.) / (height / 2.) - .55;
-      double new_y = -(((heightScale * y) + startY) - height / 2.) / (height / 2.);
-
-
-      // double new_x = (x - width / 2.) / (height / 2.) - 0.55;
-      // double new_y = (y - height / 2.) / (height / 2.);
-      int iterations;
-
-      if(type == 0) {
-        // eval point takes a point, and evals the script with it - currently set up for paramter
-        // so point gets set to the screen point (c)
-        iterations = visitor.evalPoint(std::complex<double>(new_x, new_y), tree);// mandlebrot(new_x, new_y);
-        // std:cout << "evaled a point: " << iterations << "\n"; 
-      } 
-      // else if(type == 1) {
-      //   iterations = julia(new_x, new_y, cRe, cIm);
-      // }
-      // std:coutt << "adding point at " << x << y << width << iterations*4 << "\n";
-      // std:coutt << "x: " << x << "y: " << y << "\n";
-      ptr[getIdx(x, y, width, 0)] = iterations * 16;
-      // std:cout << "first get idx\n";
-      ptr[getIdx(x, y, width, 3)] = 255;
-      // std:cout << "second get idx\n";
-
-      //// imageSmoothingEnabled to false **** this might save time, and also make it
-      // look less weird when you zoon in
+    ///// see if this works???? /////
+    //ptr[0] = reinterpret_cast<const uint8_t *>(code.c_str());
+    std::cout << "HEREERERE\n";
+    for(int i =0; i < code.length(); i++) {
+      ptr[i] = code.at(i);
+      std::cout << ptr[i]<< "\n";
     }
-  }
+
+    std::cout << "all done\n";
+
+
+
+    
+
+  //   for (int x = 0; x < floor(newCanWidth); ++x)
+  // {
+  //   for (int y = 0; y < floor(newCanHeight); ++y)
+  //   {
+
+
+
+  //     double new_x = (((widthScale * x) + startX) - width / 2.) / (height / 2.) - .55;
+  //     double new_y = -(((heightScale * y) + startY) - height / 2.) / (height / 2.);
+
+  //     int iterations;
+
+  //     if(type == 0) {
+  //       // eval point takes a point, and evals the script with it - currently set up for paramter
+  //       // so point gets set to the screen point (c)
+  //       iterations = visitor.evalPoint(std::complex<double>(new_x, new_y), tree);// mandlebrot(new_x, new_y);
+  //       // std:cout << "evaled a point: " << iterations << "\n"; 
+  //     } 
+  //     // else if(type == 1) {
+  //     //   iterations = julia(new_x, new_y, cRe, cIm);
+  //     // }
+  //     // std:coutt << "adding point at " << x << y << width << iterations*4 << "\n";
+  //     // std:coutt << "x: " << x << "y: " << y << "\n";
+  //     ptr[getIdx(x, y, width, 0)] = iterations * 16;
+  //     // std:cout << "first get idx\n";
+  //     ptr[getIdx(x, y, width, 3)] = 255;
+  //     // std:cout << "second get idx\n";
+
+  //     //// imageSmoothingEnabled to false **** this might save time, and also make it
+  //     // look less weird when you zoon in
+  //   }
+  // }
 
 
 
