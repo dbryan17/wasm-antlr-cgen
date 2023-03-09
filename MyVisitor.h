@@ -18,9 +18,8 @@
   class  myVisitor : public FractalBaseVisitor {
 
 
-    // hash table of variable to value 
-    std::unordered_map<std::string,std::complex<double>> inVars = {};
 
+    std::unordered_map<std::string,std::complex<double>> inVars = {};
 
     ////// this stuff for stops 
     std::complex<double> prev_val;
@@ -65,19 +64,20 @@ public:
 
 
   // this is the main cgen function - for now just return have it return an int - and make this part just a function for calculating the point
-  std::string cgen(FractalParser::ScriptContext* tree) {
-    output << "#include <complex.h>\n";
+    std::string cgen(FractalParser::ScriptContext* tree) {
+    output << "#include <complex.h>\nextern \"C\"{\n";
+
     // maybe include that other stuff taht doesn't change here, and jsut call gen 
-    output << "int gen(std::complex<double> point) {\n";
+    output << "int gen(double re, double im) {\n";
     // screen var to point 
-    output << "std::complex<double> " << screen_var << " = point;\n";
+    output << "std::complex<double> " << screen_var << "(re, im);\n";
     // critical value 
-    output << "std::complex<double> " << crit_var << " = " << crit_point << ";\n";
+    output << "std::complex<double> " << crit_var << crit_point << ";\n";
 
     // int res = visitScript(tree);
     visitScript(tree);
    //output << "return result" << itoa(loopCounter) << ";\n}\n";
-    output << "return result0" << ";\n}\n";
+    output << "return result0" << ";\n}\n}\n";
     std::cout << output.str() << "\n";
 
     // do I need to redefine critical point each time? and the other "global varaibles"? 
