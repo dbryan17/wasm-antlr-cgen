@@ -1,25 +1,5 @@
 // https://kapadia.github.io/emscripten/2013/09/13/emscripten-pointers-and-pointers.html
 
-// initial setup
-
-var canWidth = 480;
-var canHeight = 270;
-
-var mandCanvas = document.querySelector("#mandlbrotCanvas");
-var mandCtx = mandCanvas.getContext("2d");
-mandCtx.imageSmoothingEnabled = false;
-mandCanvas.width = canWidth;
-mandCanvas.height = canHeight;
-
-// length of array - will always stay at this even if we don't fill it all the way
-var arrayLength = canWidth * canHeight * 4;
-
-// variable intializtion for stuff that will be used later on redraws
-var prevStartX;
-var prevStartY;
-var prevWidthScale;
-var prevHeightScale;
-
 var myModule;
 var myGenPixles;
 
@@ -42,6 +22,7 @@ createModule().then((Module) => {
     code = Module.UTF8ToString(strPtr); // read from the allocated memory to the javascript string
 
     console.log(code.trim());
+    document.querySelector("#output").innerText = code.trim();
 
     Module._free(1000); // release the allocated memory
 
