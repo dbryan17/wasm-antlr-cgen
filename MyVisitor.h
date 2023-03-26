@@ -47,7 +47,7 @@ public:
       std::stringstream orbitdef;
       
       // math for im, re values is done in js, so just need the two values
-      orbitdef << "EMSCRIPTEN_KEEPALIVE void orbit(double fixed_re, double fixed_im, double clicked_re, double clicked_im, int maxIters, double minRadius, double maxRadius, double_t *p){\n";
+      orbitdef << "EMSCRIPTEN_KEEPALIVE void orbit(double fixed_re, double fixed_im, double clicked_re, double clicked_im, int maxIters, double minRadius, double maxRadius, double_t *ptr){\n";
       // adds to output 
       visitScript(tree);
 
@@ -126,7 +126,7 @@ public:
     output << "std::complex<double> " << ctx->variable()->getText() << "(";
     // adds to output
     visit(ctx->expression());
-    output << ");";
+    output << ");\n";
     return  ctx;
   }
   
@@ -361,7 +361,7 @@ public:
   /////////// CONDITIONS ///////////////  done
   //////////////////////////////////////
 
-  // DO LATER - HARD
+  // use min radius????? - or just actually equal? or up to a certain number of decimal places?
   virtual antlrcpp::Any visitSTOPS_COND(FractalParser::STOPS_CONDContext *ctx) override {
     // std:cout << "in stops command\n";
     // if(!prev_val_def) {
@@ -420,6 +420,9 @@ public:
 
   // DONE
   virtual antlrcpp::Any visitVANISHES_COND(FractalParser::VANISHES_CONDContext *ctx) override {
+
+    // TODO - maybe add conditoin that if it is passed maxRadius just return zero instead of keep trying with giant numbers which is slowing it down
+
     // std:cout << "in vanishes cond\n";
     output << "abs(";
     visit(ctx->expression());
@@ -432,6 +435,7 @@ public:
     
 
     output << "abs(";
+
 
 
 
@@ -571,14 +575,14 @@ public:
     virtual antlrcpp::Any visitLoopIterateEmpty(FractalParser::LoopIterateEmptyContext *ctx) override {
 
     
-
+      std::cout << ctx->condition()->STOPS_COND() << "\n";
       
       // variable is taken to be z - (the one to iterate)
       // not sure wether to start at 1 or 0 - ask dan
       output << "for(int i = 1; i < maxIters; i++) {\n";
 
       if(orbit) {
-        output << "p[i*2-2] = real(z);\np[i*2-1] = imag(z);\n";
+        output << "ptr[i*2-2] = real(z);\nptr[i*2-1] = imag(z);\n";
       }
       output << "z = ";
 

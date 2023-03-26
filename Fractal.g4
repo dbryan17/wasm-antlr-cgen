@@ -51,7 +51,7 @@ expression: (PLUS | MINUS)? atom #SIGNED_ATOM_EXP |
 // probably want to break up escapes, vanishes, and stops into lexemes, and have one rule or even lexer rule for all of them
 
 condition : expression (GT | LT | GT EQUALS | LT EQUALS | EQUALS) expression #COMP_COND |
-            expression 'escapes' #ESCAPES_COND |
+            expression ESCAPES #ESCAPES_COND |
             expression 'vanishes' #VANISHES_COND |
             expression 'stops' #STOPS_COND |
             condition (OR | AND | XOR) condition #COMB_COND // will probably want tokens for or and xor
@@ -171,6 +171,8 @@ AND: 'and';
 XOR:  'xor';
 
 VARIABLE : ('a' .. 'z')+ ;
+
+ESCAPES: 'escapes';
 
 
 LPAREN : '(' ;
