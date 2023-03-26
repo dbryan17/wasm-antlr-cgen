@@ -4,7 +4,7 @@ grammar Fractal;
 script: (command '.')+;
 
 command: 'set' variable 'to' expression #SET_TO_COM | 
-        'default' variable 'to' expression #DEFAULT_TO_COM |
+        'default' variable 'to' expression #DEFAULT_TO_COM | // lets the value be edited isn params tab, so this one is useless for now, same as set
         ('block' | ':') (command)+ 'end' #BLOCK_COM | 
         color_command #COLOR_COM |
         'par' command #PAR_COM |
