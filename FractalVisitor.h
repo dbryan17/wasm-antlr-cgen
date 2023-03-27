@@ -6,7 +6,6 @@
 
 #include "antlr4-runtime.h"
 #include "FractalParser.h"
-#include <complex.h>
 
 
 
@@ -74,15 +73,15 @@ public:
 
     virtual antlrcpp::Any visitCPX_FCN_EXP(FractalParser::CPX_FCN_EXPContext *context) = 0;
 
-    virtual antlrcpp::Any visitSTOPS_COND(FractalParser::STOPS_CONDContext *context) = 0;
+    virtual bool visitSTOPS_COND(FractalParser::STOPS_CONDContext *context) = 0;
 
-    virtual antlrcpp::Any visitCOMP_COND(FractalParser::COMP_CONDContext *context) = 0;
+    virtual bool visitCOMP_COND(FractalParser::COMP_CONDContext *context) = 0;
 
-    virtual antlrcpp::Any visitVANISHES_COND(FractalParser::VANISHES_CONDContext *context) = 0;
+    virtual bool visitVANISHES_COND(FractalParser::VANISHES_CONDContext *context) = 0;
 
-    virtual antlrcpp::Any visitESCAPES_COND(FractalParser::ESCAPES_CONDContext *context) = 0;
+    virtual bool visitESCAPES_COND(FractalParser::ESCAPES_CONDContext *context) = 0;
 
-    virtual antlrcpp::Any visitCOMB_COND(FractalParser::COMB_CONDContext *context) = 0;
+    virtual bool visitCOMB_COND(FractalParser::COMB_CONDContext *context) = 0;
 
     virtual antlrcpp::Any visitIF_THEN(FractalParser::IF_THENContext *context) = 0;
 
