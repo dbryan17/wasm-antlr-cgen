@@ -1,5 +1,4 @@
 
-
 // Generated from Fractal.g4 by ANTLR 4.7.1
 
 #pragma once
@@ -16,7 +15,7 @@
 class  FractalBaseVisitor : public FractalVisitor {
 public:
 
- virtual antlrcpp::Any visitScript(FractalParser::ScriptContext *ctx) override {
+  virtual antlrcpp::Any visitScript(FractalParser::ScriptContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -124,23 +123,23 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitSTOPS_COND(FractalParser::STOPS_CONDContext *ctx) override {
+  virtual bool visitSTOPS_COND(FractalParser::STOPS_CONDContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCOMP_COND(FractalParser::COMP_CONDContext *ctx) override {
+  virtual bool visitCOMP_COND(FractalParser::COMP_CONDContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitVANISHES_COND(FractalParser::VANISHES_CONDContext *ctx) override {
+  virtual bool visitVANISHES_COND(FractalParser::VANISHES_CONDContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitESCAPES_COND(FractalParser::ESCAPES_CONDContext *ctx) override {
+  virtual bool visitESCAPES_COND(FractalParser::ESCAPES_CONDContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCOMB_COND(FractalParser::COMB_CONDContext *ctx) override {
+  virtual bool visitCOMB_COND(FractalParser::COMB_CONDContext *ctx) override {
     return visitChildren(ctx);
   }
 

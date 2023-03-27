@@ -22,10 +22,10 @@ public class FractalParser extends Parser {
 		T__24=25, T__25=26, T__26=27, T__27=28, T__28=29, T__29=30, T__30=31, 
 		T__31=32, T__32=33, T__33=34, T__34=35, T__35=36, T__36=37, T__37=38, 
 		T__38=39, T__39=40, T__40=41, T__41=42, POS_INT=43, NUMBER=44, CPX_NUMBER_IM=45, 
-		PIXEL=46, ITERATE=47, EXP=48, COS=49, SIN=50, TAN=51, COSH=52, SINH=53, 
-		TANH=54, RE=55, IM=56, BAR=57, ARG=58, LOG=59, SQRT=60, ARCCOS=61, ARCSIN=62, 
-		ARCTAN=63, POW=64, PLUS=65, MINUS=66, TIMES=67, DIVIDE=68, EQUALS=69, 
-		GT=70, LT=71, OR=72, AND=73, XOR=74, VARIABLE=75, ESCAPES=76, LPAREN=77, 
+		STOPS=46, PIXEL=47, ITERATE=48, EXP=49, COS=50, SIN=51, TAN=52, COSH=53, 
+		SINH=54, TANH=55, RE=56, IM=57, BAR=58, ARG=59, LOG=60, SQRT=61, ARCCOS=62, 
+		ARCSIN=63, ARCTAN=64, POW=65, PLUS=66, MINUS=67, TIMES=68, DIVIDE=69, 
+		EQUALS=70, GT=71, LT=72, OR=73, AND=74, XOR=75, VARIABLE=76, LPAREN=77, 
 		RPAREN=78, WS=79, COMMENT=80;
 	public static final int
 		RULE_script = 0, RULE_command = 1, RULE_n = 2, RULE_constant = 3, RULE_variable = 4, 
@@ -46,16 +46,16 @@ public class FractalParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "'.'", "'set'", "'to'", "'default'", "'block'", "':'", "'end'", 
-			"'par'", "'dyn'", "'reduce'", "'mod'", "'vanishes'", "'stops'", "'if'", 
+			"'par'", "'dyn'", "'reduce'", "'mod'", "'escapes'", "'vanishes'", "'if'", 
 			"'then'", "'else'", "'do'", "'until'", "'on'", "'repeat'", "'times'", 
 			"'checkered'", "'disc'", "'period 3 cycle'", "'red'", "'green'", "'blue'", 
 			"'omega'", "'omegabar'", "'Purple'", "'White'", "'Orange'", "'['", "'|'", 
 			"']'", "'is'", "'real'", "'integer'", "'probe'", "'\"'", "'report'", 
-			"'\u2206'", null, null, null, "'pixel'", "'iterate'", "'exp'", "'cos'", 
-			"'sin'", "'tan'", "'cosh'", "'sinh'", "'tanh'", "'re'", "'im'", "'bar'", 
-			"'arg'", "'log'", "'sqrt'", "'arccos'", "'arcsin'", "'arctan'", "'^'", 
-			"'+'", "'-'", "'*'", "'/'", "'='", "'>'", "'<'", "'or'", "'and'", "'xor'", 
-			null, "'escapes'", "'('", "')'"
+			"'\u2206'", null, null, null, "'stops'", "'pixel'", "'iterate'", "'exp'", 
+			"'cos'", "'sin'", "'tan'", "'cosh'", "'sinh'", "'tanh'", "'re'", "'im'", 
+			"'bar'", "'arg'", "'log'", "'sqrt'", "'arccos'", "'arcsin'", "'arctan'", 
+			"'^'", "'+'", "'-'", "'*'", "'/'", "'='", "'>'", "'<'", "'or'", "'and'", 
+			"'xor'", null, "'('", "')'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -65,10 +65,10 @@ public class FractalParser extends Parser {
 			null, null, null, null, null, null, null, null, null, null, null, null, 
 			null, null, null, null, null, null, null, null, null, null, null, null, 
 			null, null, null, null, null, null, null, "POS_INT", "NUMBER", "CPX_NUMBER_IM", 
-			"PIXEL", "ITERATE", "EXP", "COS", "SIN", "TAN", "COSH", "SINH", "TANH", 
-			"RE", "IM", "BAR", "ARG", "LOG", "SQRT", "ARCCOS", "ARCSIN", "ARCTAN", 
-			"POW", "PLUS", "MINUS", "TIMES", "DIVIDE", "EQUALS", "GT", "LT", "OR", 
-			"AND", "XOR", "VARIABLE", "ESCAPES", "LPAREN", "RPAREN", "WS", "COMMENT"
+			"STOPS", "PIXEL", "ITERATE", "EXP", "COS", "SIN", "TAN", "COSH", "SINH", 
+			"TANH", "RE", "IM", "BAR", "ARG", "LOG", "SQRT", "ARCCOS", "ARCSIN", 
+			"ARCTAN", "POW", "PLUS", "MINUS", "TIMES", "DIVIDE", "EQUALS", "GT", 
+			"LT", "OR", "AND", "XOR", "VARIABLE", "LPAREN", "RPAREN", "WS", "COMMENT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -665,7 +665,7 @@ public class FractalParser extends Parser {
 			{
 			setState(93);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ARCCOS) | (1L << ARCSIN) | (1L << ARCTAN))) != 0)) ) {
+			if ( !(((((_la - 62)) & ~0x3f) == 0 && ((1L << (_la - 62)) & ((1L << (ARCCOS - 62)) | (1L << (ARCSIN - 62)) | (1L << (ARCTAN - 62)))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -1032,6 +1032,7 @@ public class FractalParser extends Parser {
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
+		public TerminalNode STOPS() { return getToken(FractalParser.STOPS, 0); }
 		public STOPS_CONDContext(ConditionContext ctx) { copyFrom(ctx); }
 	}
 	public static class COMP_CONDContext extends ConditionContext {
@@ -1056,7 +1057,6 @@ public class FractalParser extends Parser {
 		public ExpressionContext expression() {
 			return getRuleContext(ExpressionContext.class,0);
 		}
-		public TerminalNode ESCAPES() { return getToken(FractalParser.ESCAPES, 0); }
 		public ESCAPES_CONDContext(ConditionContext ctx) { copyFrom(ctx); }
 	}
 	public static class COMB_CONDContext extends ConditionContext {
@@ -1149,7 +1149,7 @@ public class FractalParser extends Parser {
 				setState(154);
 				expression(0);
 				setState(155);
-				match(ESCAPES);
+				match(T__11);
 				}
 				break;
 			case 3:
@@ -1160,7 +1160,7 @@ public class FractalParser extends Parser {
 				setState(157);
 				expression(0);
 				setState(158);
-				match(T__11);
+				match(T__12);
 				}
 				break;
 			case 4:
@@ -1170,8 +1170,10 @@ public class FractalParser extends Parser {
 				_prevctx = _localctx;
 				setState(160);
 				expression(0);
+				{
 				setState(161);
-				match(T__12);
+				match(STOPS);
+				}
 				}
 				break;
 			}
@@ -1191,7 +1193,7 @@ public class FractalParser extends Parser {
 					if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
 					setState(166);
 					_la = _input.LA(1);
-					if ( !(((((_la - 72)) & ~0x3f) == 0 && ((1L << (_la - 72)) & ((1L << (OR - 72)) | (1L << (AND - 72)) | (1L << (XOR - 72)))) != 0)) ) {
+					if ( !(((((_la - 73)) & ~0x3f) == 0 && ((1L << (_la - 73)) & ((1L << (OR - 73)) | (1L << (AND - 73)) | (1L << (XOR - 73)))) != 0)) ) {
 					_errHandler.recoverInline(this);
 					}
 					else {
@@ -1852,8 +1854,8 @@ public class FractalParser extends Parser {
 		"\3\22\3\22\3\22\3\22\3\22\5\22\u00f8\n\22\3\23\3\23\3\24\3\24\3\24\3\24"+
 		"\6\24\u0100\n\24\r\24\16\24\u0101\3\24\3\24\3\24\3\24\3\24\3\24\3\24\3"+
 		"\24\3\24\3\24\3\25\3\25\3\25\3\25\3\25\3\25\3\25\3\25\3\u0101\4\26\30"+
-		"\26\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(\2\n\3\2\7\b\3\2\62>\3"+
-		"\2?A\3\2CD\3\2JL\3\2\30\32\3\2\33\"\3\2\'(\2\u0128\2-\3\2\2\2\4J\3\2\2"+
+		"\26\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(\2\n\3\2\7\b\3\2\63?\3"+
+		"\2@B\3\2DE\3\2KM\3\2\30\32\3\2\33\"\3\2\'(\2\u0128\2-\3\2\2\2\4J\3\2\2"+
 		"\2\6L\3\2\2\2\bQ\3\2\2\2\nS\3\2\2\2\fU\3\2\2\2\16W\3\2\2\2\20[\3\2\2\2"+
 		"\22]\3\2\2\2\24_\3\2\2\2\26y\3\2\2\2\30\u00a5\3\2\2\2\32\u00bb\3\2\2\2"+
 		"\34\u00d7\3\2\2\2\36\u00d9\3\2\2\2 \u00db\3\2\2\2\"\u00f7\3\2\2\2$\u00f9"+
@@ -1865,28 +1867,28 @@ public class FractalParser extends Parser {
 		"\2DE\7\n\2\2EK\5\4\3\2FG\7\13\2\2GK\5\4\3\2HK\5\32\16\2IK\5\34\17\2J\61"+
 		"\3\2\2\2J\66\3\2\2\2J;\3\2\2\2JC\3\2\2\2JD\3\2\2\2JF\3\2\2\2JH\3\2\2\2"+
 		"JI\3\2\2\2K\5\3\2\2\2LM\7-\2\2M\7\3\2\2\2NR\5\f\7\2OR\5\16\b\2PR\5\6\4"+
-		"\2QN\3\2\2\2QO\3\2\2\2QP\3\2\2\2R\t\3\2\2\2ST\7M\2\2T\13\3\2\2\2UV\7."+
+		"\2QN\3\2\2\2QO\3\2\2\2QP\3\2\2\2R\t\3\2\2\2ST\7N\2\2T\13\3\2\2\2UV\7."+
 		"\2\2V\r\3\2\2\2WX\7/\2\2X\17\3\2\2\2Y\\\5\b\5\2Z\\\5\n\6\2[Y\3\2\2\2["+
 		"Z\3\2\2\2\\\21\3\2\2\2]^\t\3\2\2^\23\3\2\2\2_`\t\4\2\2`\25\3\2\2\2ac\b"+
 		"\f\1\2bd\t\5\2\2cb\3\2\2\2cd\3\2\2\2de\3\2\2\2ez\5\20\t\2fg\5\22\n\2g"+
 		"h\7O\2\2hi\5\26\f\2ij\7P\2\2jz\3\2\2\2kl\5\24\13\2lm\7O\2\2mn\5\26\f\2"+
 		"no\7P\2\2oz\3\2\2\2pq\7\f\2\2qr\5\n\6\2rs\7\r\2\2st\5\26\f\4tz\3\2\2\2"+
 		"uv\7O\2\2vw\5\26\f\2wx\7P\2\2xz\3\2\2\2ya\3\2\2\2yf\3\2\2\2yk\3\2\2\2"+
-		"yp\3\2\2\2yu\3\2\2\2z\u008c\3\2\2\2{|\f\n\2\2|}\7E\2\2}\u008b\5\26\f\13"+
-		"~\177\f\t\2\2\177\u0080\7F\2\2\u0080\u008b\5\26\f\n\u0081\u0082\f\b\2"+
-		"\2\u0082\u0083\7C\2\2\u0083\u008b\5\26\f\t\u0084\u0085\f\7\2\2\u0085\u0086"+
-		"\7D\2\2\u0086\u008b\5\26\f\b\u0087\u0088\f\13\2\2\u0088\u0089\7B\2\2\u0089"+
+		"yp\3\2\2\2yu\3\2\2\2z\u008c\3\2\2\2{|\f\n\2\2|}\7F\2\2}\u008b\5\26\f\13"+
+		"~\177\f\t\2\2\177\u0080\7G\2\2\u0080\u008b\5\26\f\n\u0081\u0082\f\b\2"+
+		"\2\u0082\u0083\7D\2\2\u0083\u008b\5\26\f\t\u0084\u0085\f\7\2\2\u0085\u0086"+
+		"\7E\2\2\u0086\u008b\5\26\f\b\u0087\u0088\f\13\2\2\u0088\u0089\7C\2\2\u0089"+
 		"\u008b\5\6\4\2\u008a{\3\2\2\2\u008a~\3\2\2\2\u008a\u0081\3\2\2\2\u008a"+
 		"\u0084\3\2\2\2\u008a\u0087\3\2\2\2\u008b\u008e\3\2\2\2\u008c\u008a\3\2"+
 		"\2\2\u008c\u008d\3\2\2\2\u008d\27\3\2\2\2\u008e\u008c\3\2\2\2\u008f\u0090"+
-		"\b\r\1\2\u0090\u0098\5\26\f\2\u0091\u0099\7H\2\2\u0092\u0099\7I\2\2\u0093"+
-		"\u0094\7H\2\2\u0094\u0099\7G\2\2\u0095\u0096\7I\2\2\u0096\u0099\7G\2\2"+
-		"\u0097\u0099\7G\2\2\u0098\u0091\3\2\2\2\u0098\u0092\3\2\2\2\u0098\u0093"+
+		"\b\r\1\2\u0090\u0098\5\26\f\2\u0091\u0099\7I\2\2\u0092\u0099\7J\2\2\u0093"+
+		"\u0094\7I\2\2\u0094\u0099\7H\2\2\u0095\u0096\7J\2\2\u0096\u0099\7H\2\2"+
+		"\u0097\u0099\7H\2\2\u0098\u0091\3\2\2\2\u0098\u0092\3\2\2\2\u0098\u0093"+
 		"\3\2\2\2\u0098\u0095\3\2\2\2\u0098\u0097\3\2\2\2\u0099\u009a\3\2\2\2\u009a"+
 		"\u009b\5\26\f\2\u009b\u00a6\3\2\2\2\u009c\u009d\5\26\f\2\u009d\u009e\7"+
-		"N\2\2\u009e\u00a6\3\2\2\2\u009f\u00a0\5\26\f\2\u00a0\u00a1\7\16\2\2\u00a1"+
-		"\u00a6\3\2\2\2\u00a2\u00a3\5\26\f\2\u00a3\u00a4\7\17\2\2\u00a4\u00a6\3"+
-		"\2\2\2\u00a5\u008f\3\2\2\2\u00a5\u009c\3\2\2\2\u00a5\u009f\3\2\2\2\u00a5"+
+		"\16\2\2\u009e\u00a6\3\2\2\2\u009f\u00a0\5\26\f\2\u00a0\u00a1\7\17\2\2"+
+		"\u00a1\u00a6\3\2\2\2\u00a2\u00a3\5\26\f\2\u00a3\u00a4\7\60\2\2\u00a4\u00a6"+
+		"\3\2\2\2\u00a5\u008f\3\2\2\2\u00a5\u009c\3\2\2\2\u00a5\u009f\3\2\2\2\u00a5"+
 		"\u00a2\3\2\2\2\u00a6\u00ac\3\2\2\2\u00a7\u00a8\f\3\2\2\u00a8\u00a9\t\6"+
 		"\2\2\u00a9\u00ab\5\30\r\4\u00aa\u00a7\3\2\2\2\u00ab\u00ae\3\2\2\2\u00ac"+
 		"\u00aa\3\2\2\2\u00ac\u00ad\3\2\2\2\u00ad\31\3\2\2\2\u00ae\u00ac\3\2\2"+
@@ -1897,9 +1899,9 @@ public class FractalParser extends Parser {
 		"\3\2\2\2\u00bc\33\3\2\2\2\u00bd\u00bf\7\23\2\2\u00be\u00c0\5\4\3\2\u00bf"+
 		"\u00be\3\2\2\2\u00c0\u00c1\3\2\2\2\u00c1\u00bf\3\2\2\2\u00c1\u00c2\3\2"+
 		"\2\2\u00c2\u00c3\3\2\2\2\u00c3\u00c4\7\24\2\2\u00c4\u00c5\5\30\r\2\u00c5"+
-		"\u00d8\3\2\2\2\u00c6\u00c7\7\61\2\2\u00c7\u00c8\5\26\f\2\u00c8\u00c9\7"+
+		"\u00d8\3\2\2\2\u00c6\u00c7\7\62\2\2\u00c7\u00c8\5\26\f\2\u00c8\u00c9\7"+
 		"\25\2\2\u00c9\u00ca\5\n\6\2\u00ca\u00cb\7\24\2\2\u00cb\u00cc\5\30\r\2"+
-		"\u00cc\u00d8\3\2\2\2\u00cd\u00ce\7\61\2\2\u00ce\u00cf\5\26\f\2\u00cf\u00d0"+
+		"\u00cc\u00d8\3\2\2\2\u00cd\u00ce\7\62\2\2\u00ce\u00cf\5\26\f\2\u00cf\u00d0"+
 		"\7\24\2\2\u00d0\u00d1\5\30\r\2\u00d1\u00d8\3\2\2\2\u00d2\u00d3\7\26\2"+
 		"\2\u00d3\u00d4\5\6\4\2\u00d4\u00d5\7\27\2\2\u00d5\u00d6\5\4\3\2\u00d6"+
 		"\u00d8\3\2\2\2\u00d7\u00bd\3\2\2\2\u00d7\u00c6\3\2\2\2\u00d7\u00cd\3\2"+
@@ -1919,7 +1921,7 @@ public class FractalParser extends Parser {
 		"\u00ff\3\2\2\2\u0102\u0103\3\2\2\2\u0103\u0104\7*\2\2\u0104\u0105\3\2"+
 		"\2\2\u0105\u0106\7\b\2\2\u0106\u0107\5\4\3\2\u0107\u0108\7+\2\2\u0108"+
 		"\u0109\5\n\6\2\u0109\u010a\7\3\2\2\u010a\u010b\7\t\2\2\u010b\u010c\7\3"+
-		"\2\2\u010c\'\3\2\2\2\u010d\u010e\5\n\6\2\u010e\u010f\7G\2\2\u010f\u0110"+
+		"\2\2\u010c\'\3\2\2\2\u010d\u010e\5\n\6\2\u010e\u010f\7H\2\2\u010f\u0110"+
 		"\7,\2\2\u0110\u0111\7O\2\2\u0111\u0112\5\26\f\2\u0112\u0113\7P\2\2\u0113"+
 		")\3\2\2\2\23/?JQ[cy\u008a\u008c\u0098\u00a5\u00ac\u00bb\u00c1\u00d7\u00f7"+
 		"\u0101";

@@ -21,6 +21,7 @@
     int loopCounter = 0;
     bool param = false;
     bool orbit = false;
+    bool stopsSecond = false;
     // int del;
 
 public: 
@@ -39,6 +40,9 @@ public:
 
     // cgen orbit function
     std::string cgenOrbit(FractalParser::ScriptContext* tree) {
+
+      stopsSecond = false;
+    
 
       orbit = true;
       // reset output
@@ -361,29 +365,23 @@ public:
   /////////// CONDITIONS ///////////////  done
   //////////////////////////////////////
 
-  // use min radius????? - or just actually equal? or up to a certain number of decimal places?
-  virtual antlrcpp::Any visitSTOPS_COND(FractalParser::STOPS_CONDContext *ctx) override {
-    // std:cout << "in stops command\n";
-    // if(!prev_val_def) {
-    //   prev_val_def = true;
-    //   // std:cout << "prev not there\n";
-    //   // can do this once I make the return types of real functions and cpx function std::complex<double>
-    //   // prev_val = visit(ctx->expression());
-    //   const std::complex<double> &p = visit(ctx->expression());
-    //   prev_val = p;
+  virtual bool visitSTOPS_COND(FractalParser::STOPS_CONDContext *ctx) override {
 
-    //   return false;
-    // } else {
-    //   const std::complex<double> &val = visit(ctx->expression());
-    //   bool toR = (val == prev_val);
-    //   prev_val = val;
-    //   return toR;
-    // }
-    return ctx;
+
+    if(!stopsSecond) {
+      // first pass
+      output << "prev == ";
+      visit(ctx->expression());
+    } else {
+      visit(ctx->expression());
+    }
+
+
+    return true;
   }
 
   // DONE
-  virtual antlrcpp::Any visitCOMP_COND(FractalParser::COMP_CONDContext *ctx) override {
+  virtual bool visitCOMP_COND(FractalParser::COMP_CONDContext *ctx) override {
     // get awhat type it is, do thing for each one
     
 
@@ -414,12 +412,12 @@ public:
     visit(ctx->expression(1));
     output << ")";
 
-    return ctx;
+    return false;
 
   }
 
   // DONE
-  virtual antlrcpp::Any visitVANISHES_COND(FractalParser::VANISHES_CONDContext *ctx) override {
+  virtual bool visitVANISHES_COND(FractalParser::VANISHES_CONDContext *ctx) override {
 
     // TODO - maybe add conditoin that if it is passed maxRadius just return zero instead of keep trying with giant numbers which is slowing it down
 
@@ -427,11 +425,11 @@ public:
     output << "abs(";
     visit(ctx->expression());
     output << ") < minRadius";
-    return ctx; // abs(expr) < minRadius;
+    return false; // abs(expr) < minRadius;
   }
 
   // DONE
-  virtual antlrcpp::Any visitESCAPES_COND(FractalParser::ESCAPES_CONDContext *ctx) override {
+  virtual bool visitESCAPES_COND(FractalParser::ESCAPES_CONDContext *ctx) override {
     
 
     output << "abs(";
@@ -447,12 +445,12 @@ public:
 
     output << ") > maxRadius" ;
     
-    return ctx;
+    return false;
     
   }
 
   // DONE
-  virtual antlrcpp::Any visitCOMB_COND(FractalParser::COMB_CONDContext *ctx) override {
+  virtual bool visitCOMB_COND(FractalParser::COMB_CONDContext *ctx) override {
 
     // // std:cout << "in comb cond\n";
     // bool left = visit(ctx->condition(0));
@@ -485,22 +483,21 @@ public:
       output << " && ";
       visit(ctx->condition(1));
       output << "))";
-      return ctx; // ((left || right) && !(left && right));
+      
     } else if(ctx->OR()) {
       visit(ctx->condition(0)); 
       output << " || ";
       visit(ctx->condition(1));
-      return ctx; // left || right;
     } else if(ctx->AND()) {
       visit(ctx->condition(0)); 
       output << " && ";
       visit(ctx->condition(1));
 
-      return ctx; //  left && right;
     } else {
       // std:cout << "------ERROR------- comb cond no tokens found\n";
-      return ctx; // false;
     }
+
+    return false;
 
     
 
@@ -574,54 +571,77 @@ public:
     // ITERATE expression 'until' condition - var taken to be z  DONE 
     virtual antlrcpp::Any visitLoopIterateEmpty(FractalParser::LoopIterateEmptyContext *ctx) override {
 
-    
-      std::cout << ctx->condition()->STOPS_COND() << "\n";
-      
+
+
       // variable is taken to be z - (the one to iterate)
       // not sure wether to start at 1 or 0 - ask dan
-      output << "for(int i = 1; i < maxIters; i++) {\n";
 
+      // copy output and delete current 
+      std::stringstream oldOut;
+      oldOut << output.str();
+      output.str("");
+
+      // create tmp string stream
+      std::stringstream tmp;
+
+
+      // old stuff
+      tmp << "for(int i = 1; i < maxIters; i++) {\n";
       if(orbit) {
-        output << "ptr[i*2-2] = real(z);\nptr[i*2-1] = imag(z);\n";
+        tmp << "ptr[i*2-2] = real(z);\nptr[i*2-1] = imag(z);\n";
       }
-      output << "z = ";
-
+      tmp << "z = ";
       visit(ctx->expression());
+      // take out putput and clear
+      tmp << output.str();
+      output.str("");
 
-      output << ";\n";
-      
+      tmp << ";\n";
+      tmp << "if(";
+
+      // get if it is a stops 
+      bool stops = visit(ctx->condition());
+      // save output and delete 
+      tmp << output.str();
+      tmp << ") {\n";
+      output.str("");
 
 
-
-
-      output << "if(";
-      // std::cout<< "hhhhhhl\n";
-      visit(ctx->condition());
-// std::cout<< "hhhhhhl\n";
-      output << ") {\n";
       // deal with the nested for loops later TODO
       if(orbit) {
-        output << "break;\n}\n}\n";
+        tmp << "break;\n}\n";
       } else {
-        output << "return i;\n}\n}\n";
+        tmp << "return i;\n}\n";
       }
 
-      
-      //output << "|| " << "counter" << itoa(loopCounter) << " >= " << iters << ") {\n break;\n}\nint result" << itoa(loopCounter) << " = counter" << itoa(loopCounter) << ";\n"; 
-      // output << "|| " << "counter0 >= " << iters << ") {\n break;\n}\n}\nint result0 = counter0;\n"; 
+            // if it is a stops - do stops stuff
+      if(stops) {
+        stopsSecond = true;
+        tmp << "prev = ";
+        visit(ctx->condition());
+        tmp << output.str() << ";\n";
+        output.str("");
+      }
 
 
-      // const std::string &var = "z";
-      // int counter = 0;
-      // do {
-      //   const std::complex<double> &res = visit(ctx->expression());
-      //   addUpdate(var, res);
-      //   counter++;
-      // }
-      // while(!visit(ctx->condition()) && (counter < iters));
 
-      // result = counter;
-      // return counter;
+    
+      tmp << "}\n";
+
+
+      if(stops) {
+
+        output << "std::complex<double>prev(";
+        visit(ctx->condition());
+        output << ");\n";
+        oldOut << output.str();
+        output.str("");
+      }
+
+      oldOut << tmp.str();
+
+      output << oldOut.str();
+
       return ctx;
       
     }
